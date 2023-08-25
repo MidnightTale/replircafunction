@@ -6,25 +6,24 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Objects;
 
 public final class Replircafunction extends JavaPlugin implements CommandExecutor {
-
-    // Define a boolean variable for dev mode
-    private boolean devMode = true;
 
     @Override
     public void onEnable() {
         // Register the command
-        getCommand("functionreplica").setExecutor(this);
+        Objects.requireNonNull(getCommand("functionreplica")).setExecutor(this);
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
         if (args.length < 1) {
             sender.sendMessage(ChatColor.RED + "Usage: /functionreplica <namespace:function_path>");
             return true;
@@ -58,6 +57,8 @@ public final class Replircafunction extends JavaPlugin implements CommandExecuto
             return;
         }
 
+        // Define a boolean variable for dev mode
+        boolean devMode = true;
         for (File datapackDir : datapackDirs) {
             File functionFile = new File(datapackDir, "data" + File.separator + namespace + File.separator + "functions" + File.separator + path);
 
@@ -74,15 +75,31 @@ public final class Replircafunction extends JavaPlugin implements CommandExecuto
                         line = line.trim();
 
                         if (!line.isEmpty() && !line.startsWith("#")) {
-                            if (devMode) {
-                                sender.sendMessage(ChatColor.GRAY + "Executing: " + line);
-                            }
-                            String finalLine = line;
+                            if (line.startsWith("functionreplica ")) {
+                                // Extract the nested function path
+                                String nestedFunctionPath = line.substring("functionreplica ".length());
+                                executeFunction(sender, nestedFunctionPath);
+                            } else {
+                                if (devMode) {
+                                    sender.sendMessage(ChatColor.GRAY + "Executing: " + line);
+                                }
 
-                            Bukkit.getGlobalRegionScheduler().run(this, scheduledTask -> {
-                                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Executing command: " + finalLine);
-                                getServer().dispatchCommand(getServer().getConsoleSender(), finalLine);
-                            });
+                                if (line.startsWith("/")) {
+                                    // Regular command, execute it
+                                    String finalLine = line;
+                                    Bukkit.getGlobalRegionScheduler().run(this, scheduledTask -> {
+                                        Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Executing command: " + finalLine);
+                                        getServer().dispatchCommand(getServer().getConsoleSender(), finalLine.substring(1)); // Remove the leading "/"
+                                    });
+                                } else {
+                                    // Function, execute it
+                                    String finalLine1 = line;
+                                    Bukkit.getGlobalRegionScheduler().run(this, scheduledTask -> {
+                                        Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Executing command: function " + finalLine1);
+                                        getServer().dispatchCommand(getServer().getConsoleSender(), "function " + finalLine1);
+                                    });
+                                }
+                            }
                         }
                     }
 
