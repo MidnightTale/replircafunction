@@ -15,7 +15,7 @@ import java.util.List;
 public final class Replircafunction extends JavaPlugin implements CommandExecutor {
 
     // Define a boolean variable for dev mode
-    private boolean devMode = false;
+    private boolean devMode = true;
 
     @Override
     public void onEnable() {
@@ -78,8 +78,10 @@ public final class Replircafunction extends JavaPlugin implements CommandExecuto
                                 sender.sendMessage(ChatColor.GRAY + "Executing: " + line);
                             }
                             String finalLine = line;
+
                             Bukkit.getGlobalRegionScheduler().run(this, scheduledTask -> {
-                            getServer().dispatchCommand(getServer().getConsoleSender(), finalLine);
+                                Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Executing command: " + finalLine);
+                                getServer().dispatchCommand(getServer().getConsoleSender(), finalLine);
                             });
                         }
                     }
