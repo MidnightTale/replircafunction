@@ -84,13 +84,21 @@ public final class Replircafunction extends JavaPlugin implements CommandExecuto
                                     sender.sendMessage(ChatColor.GRAY + "Executing: " + line);
                                 }
 
-                                if (line.startsWith("/")) {
-                                    // Regular command, execute it
-                                    String finalLine = line;
-                                    Bukkit.getGlobalRegionScheduler().run(this, scheduledTask -> {
-                                        Bukkit.getConsoleSender().sendMessage(ChatColor.YELLOW + "Executing command: " + finalLine);
-                                        getServer().dispatchCommand(getServer().getConsoleSender(), finalLine.substring(1)); // Remove the leading "/"
-                                    });
+                                if (line.startsWith("/execute")) {
+                                    // Check if the line contains 'run functionreplica'
+                                    if (line.contains("run functionreplica")) {
+                                        // Replace 'functionreplica' with 'function' and execute the command
+                                        String modifiedLine = line.replace("run functionreplica", "run function");
+                                        Bukkit.getGlobalRegionScheduler().run(this, scheduledTask -> {
+                                            Bukkit.dispatchCommand(getServer().getConsoleSender(), modifiedLine);
+                                        });
+                                    } else {
+                                        // Execute the original line as is
+                                        String finalLine = line;
+                                        Bukkit.getGlobalRegionScheduler().run(this, scheduledTask -> {
+                                            Bukkit.dispatchCommand(getServer().getConsoleSender(), finalLine);
+                                        });
+                                    }
                                 } else {
                                     // Function, execute it
                                     String finalLine1 = line;
