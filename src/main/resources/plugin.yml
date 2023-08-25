@@ -1,0 +1,11 @@
+name: replircafunction
+version: '${version}'
+main: xyz.hynse.replircafunction.Replircafunction
+api-version: '1.20'
+authors: [MidnightTale]
+website: hynse.xyz
+folia-supported: true
+commands:
+  functionreplica:
+    description: Execute replicated function
+    usage: /functionreplica <namespace:function_path>
