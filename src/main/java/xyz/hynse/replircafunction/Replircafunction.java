@@ -83,23 +83,6 @@ public final class Replircafunction extends JavaPlugin implements CommandExecuto
                                 if (devMode) {
                                     sender.sendMessage(ChatColor.GRAY + "Executing: " + line);
                                 }
-
-                                if (line.startsWith("/execute")) {
-                                    // Check if the line contains 'run functionreplica'
-                                    if (line.contains("run functionreplica")) {
-                                        // Replace 'functionreplica' with 'function' and execute the command
-                                        String modifiedLine = line.replace("run functionreplica", "run function");
-                                        Bukkit.getGlobalRegionScheduler().run(this, scheduledTask -> {
-                                            Bukkit.dispatchCommand(getServer().getConsoleSender(), modifiedLine);
-                                        });
-                                    } else {
-                                        // Execute the original line as is
-                                        String finalLine = line;
-                                        Bukkit.getGlobalRegionScheduler().run(this, scheduledTask -> {
-                                            Bukkit.dispatchCommand(getServer().getConsoleSender(), finalLine);
-                                        });
-                                    }
-                                } else {
                                     // Function, execute it
                                     String finalLine1 = line;
                                     Bukkit.getGlobalRegionScheduler().run(this, scheduledTask -> {
@@ -108,7 +91,6 @@ public final class Replircafunction extends JavaPlugin implements CommandExecuto
                                     });
                                 }
                             }
-                        }
                     }
 
                     if (devMode) {
